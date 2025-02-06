@@ -1,38 +1,31 @@
-name: Test with Docker
+Ajout du Dockerfile et adaptation du workflow GitHub Actionsname: Test FizzBuzz
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-  push:
+  pull_request:
     branches:
       - main
 
 jobs:
   test:
-    name: Run Unit Tests in Docker
     runs-on: ubuntu-latest
+    container: python:3.9-slim
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build Docker Image
-        run: docker build -t fizzbuzz-test .
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-      - name: Run Tests in Docker
-        run: docker run --rm fizzbuzz-test
-
-  build_image:
-    name: Build Docker Image (Only on Main)
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'  # Exécute cette étape seulement sur la branche main
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Build and save Docker image
+      - name: Install dependencies
         run: |
-          docker build -t fizzbuzz-app .
-          docker save fizzbuzz-app > fizzbuzz.tar
+          python -m pip install --upgrade pip
+
+      - name: Run tests
+        run: |
+          python -m unittest discover -s . -p "test_*.py"²
