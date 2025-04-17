@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - merge-rules
   pull_request:
     branches:
       - main
@@ -27,4 +28,4 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m unittest discover -s . -p "test_*.py"²
+          python -m unittest discover -s test -p "test_*.py"
